@@ -3,28 +3,45 @@ import { symptomDatabase } from "./symptomDatabase";
 export async function processWithExpertSystem(query: string): Promise<string> {
   const lowercaseQuery = query.toLowerCase();
 
-  const matched = Object.entries(symptomDatabase).filter(
-    ([disease, data]) =>
-      lowercaseQuery.includes(disease.toLowerCase()) ||
-      data.symptoms.some((sym) => lowercaseQuery.includes(sym.trim().toLowerCase()))
-  );
+  // break query into tokens
+  const queryTokens = lowercaseQuery
+    .split(/[\s,.;:!?]+/)
+    .map((t) => t.trim())
+    .filter(Boolean);
 
-  if (matched.length === 0) {
-    return "I understand you're not feeling well. Could you describe your symptoms in more detail? For example, mention specific ones like headache, fever, cough, or rash.";
+  // score diseases by number of symptom matches
+  const scoredMatches = Object.entries(symptomDatabase)
+    .map(([disease, data]) => {
+      const symptomMatches = data.symptoms.filter((sym) =>
+        queryTokens.some((q) => sym.toLowerCase().includes(q))
+      );
+      return { disease, data, score: symptomMatches.length };
+    })
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score);
+
+  if (scoredMatches.length === 0) {
+    return "I understand you're not feeling well. Could you mention specific symptoms like fever, cough, headache, or diarrhoea?";
   }
 
-  let response = "Based on your description, I found some possible matches:\n\n";
+  // just take top 1–2 matches
+  const topMatches = scoredMatches.slice(0, 2);
 
-  matched.forEach(([disease, data]) => {
-    response += `🩺 **${disease}**\n`;
-    response += `- Description: ${data.description}\n`;
-    response += `- First question: ${data.questions[0]}\n`;
-    response += `- Common symptoms: ${data.symptoms.join(", ")}\n`;
-    response += `- Suggested precautions: ${data.precautions.join(", ")}\n\n`;
+  let response = "Based on your symptoms, here are the most likely conditions:\n\n";
+
+  topMatches.forEach(({ disease, data, score }) => {
+    const prettyName = disease.replace(/_/g, " ");
+
+    response += `🩺 **${prettyName}** (matched ${score} symptom${score > 1 ? "s" : ""})\n`;
+    response += `- **Description:** ${data.description.split(".")[0]}. \n`;
+    response += `- **Typical symptoms:** ${data.symptoms.slice(0, 4).join(", ")}...\n`;
+    response += `- **Next question:** ${data.questions[0]}\n`;
+
+    // short summary line
+    response += `_Summary: ${prettyName} often involves ${data.symptoms[0]} and related issues._\n\n`;
   });
 
-  response +=
-    "Please provide more details so I can refine the guidance. Remember, I'm an AI assistant and not a substitute for professional medical advice.";
+  response += "Could you tell me more so I can refine the guidance?";
 
   return response;
 }
