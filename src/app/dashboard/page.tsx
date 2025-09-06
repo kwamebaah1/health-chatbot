@@ -1,0 +1,102 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { StatsCards } from '@/components/Dashboard/StatsCards'
+import { HealthTips } from '@/components/Dashboard/HealthTips'
+import { QuickActions } from '@/components/Dashboard/QuickActions'
+import { ChatInterface } from '@/components/ChatInterface'
+import { Button } from '@/components/ui/button'
+import { MessageSquare, Activity, Heart, Calendar } from 'lucide-react'
+import { motion } from 'framer-motion'
+
+export default function Dashboard() {
+  const [activeTab, setActiveTab] = useState('chat')
+  const [healthData, setHealthData] = useState({
+    heartRate: 72,
+    steps: 8432,
+    sleep: 7.2,
+    calories: 2100
+  })
+
+  useEffect(() => {
+    // Simulate live data updates
+    const interval = setInterval(() => {
+      setHealthData(prev => ({
+        heartRate: Math.floor(Math.random() * 20) + 65,
+        steps: prev.steps + Math.floor(Math.random() * 10),
+        sleep: prev.sleep + (Math.random() * 0.2 - 0.1),
+        calories: prev.calories + Math.floor(Math.random() * 5)
+      }))
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-8"
+        >
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+            Health Dashboard
+          </h1>
+          <p className="text-slate-600 dark:text-slate-400">
+            Welcome back! Here's your health overview and assistant.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+          <div className="lg:col-span-2">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6">
+              <div className="flex space-x-2 mb-6">
+                <Button
+                  variant={activeTab === 'chat' ? 'default' : 'ghost'}
+                  onClick={() => setActiveTab('chat')}
+                  className="flex items-center space-x-2"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  <span>Chat Assistant</span>
+                </Button>
+                <Button
+                  variant={activeTab === 'activity' ? 'default' : 'ghost'}
+                  onClick={() => setActiveTab('activity')}
+                  className="flex items-center space-x-2"
+                >
+                  <Activity className="w-4 h-4" />
+                  <span>Activity</span>
+                </Button>
+              </div>
+
+              {activeTab === 'chat' ? (
+                <div className="h-[600px]">
+                  <ChatInterface />
+                </div>
+              ) : (
+                <div className="h-[600px] flex items-center justify-center">
+                  <div className="text-center">
+                    <Activity className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
+                      Activity Tracking
+                    </h3>
+                    <p className="text-slate-600 dark:text-slate-400">
+                      Your health activity data will appear here.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <HealthTips />
+            <QuickActions />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
