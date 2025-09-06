@@ -9,7 +9,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@mui/icons-material": "^7.3.2",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-switch": "^1.2.6",
     "@supabase/supabase-js": "^2.57.2",

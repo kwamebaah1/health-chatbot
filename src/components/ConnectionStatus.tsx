@@ -1,7 +1,7 @@
 'use client'
 
 import { ChatMode } from '@/types/chat'
-import { Wifi, WifiOff, AutoAwesome } from '@mui/icons-material'
+import { Wifi, WifiOff } from "lucide-react"
 
 interface ConnectionStatusProps {
   isOnline: boolean
