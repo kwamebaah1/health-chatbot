@@ -1,53 +1,30 @@
-const symptomDatabase = {
-  headache: {
-    description: "Head pain or discomfort",
-    questions: [
-      "How severe is your headache? (1-10)",
-      "Where is the pain located?",
-      "How long have you had this headache?"
-    ],
-    possibleConditions: [
-      "Tension headache",
-      "Migraine",
-      "Cluster headache",
-      "Sinus headache"
-    ]
-  },
-  fever: {
-    description: "Elevated body temperature",
-    questions: [
-      "What is your temperature?",
-      "How long have you had fever?",
-      "Do you have chills or sweating?"
-    ],
-    possibleConditions: [
-      "Viral infection",
-      "Bacterial infection",
-      "Inflammatory condition"
-    ]
-  }
-  // Expand with more symptoms and conditions
-}
+import { symptomDatabase } from "./symptomDatabase";
 
 export async function processWithExpertSystem(query: string): Promise<string> {
-  // Simple keyword matching - you'd want a more sophisticated NLP approach
-  const lowercaseQuery = query.toLowerCase()
-  
-  const matchedSymptoms = Object.entries(symptomDatabase)
-    .filter(([symptom]) => lowercaseQuery.includes(symptom))
-    .map(([symptom, data]) => ({ symptom, ...data }))
-  
-  if (matchedSymptoms.length === 0) {
-    return "I understand you're not feeling well. Could you describe your symptoms in more detail? For example, you could mention specific symptoms like headache, fever, or cough."
+  const lowercaseQuery = query.toLowerCase();
+
+  const matched = Object.entries(symptomDatabase).filter(
+    ([disease, data]) =>
+      lowercaseQuery.includes(disease.toLowerCase()) ||
+      data.symptoms.some((sym) => lowercaseQuery.includes(sym.trim().toLowerCase()))
+  );
+
+  if (matched.length === 0) {
+    return "I understand you're not feeling well. Could you describe your symptoms in more detail? For example, mention specific ones like headache, fever, cough, or rash.";
   }
-  
-  let response = "Based on your description, I've identified possible symptoms. "
-  
-  matchedSymptoms.forEach(({ symptom, questions, possibleConditions }) => {
-    response += `For ${symptom}: ${questions[0]} `
-  })
-  
-  response += "Please provide more details so I can give you better guidance. Remember, I'm an AI assistant and not a substitute for professional medical advice."
-  
-  return response
+
+  let response = "Based on your description, I found some possible matches:\n\n";
+
+  matched.forEach(([disease, data]) => {
+    response += `🩺 **${disease}**\n`;
+    response += `- Description: ${data.description}\n`;
+    response += `- First question: ${data.questions[0]}\n`;
+    response += `- Common symptoms: ${data.symptoms.join(", ")}\n`;
+    response += `- Suggested precautions: ${data.precautions.join(", ")}\n\n`;
+  });
+
+  response +=
+    "Please provide more details so I can refine the guidance. Remember, I'm an AI assistant and not a substitute for professional medical advice.";
+
+  return response;
 }
