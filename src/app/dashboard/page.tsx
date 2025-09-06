@@ -1,12 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { StatsCards } from '@/components/Dashboard/StatsCards'
 import { HealthTips } from '@/components/Dashboard/HealthTips'
 import { QuickActions } from '@/components/Dashboard/QuickActions'
 import { ChatInterface } from '@/components/ChatInterface'
 import { Button } from '@/components/ui/button'
-import { MessageSquare, Activity, Heart, Calendar } from 'lucide-react'
+import { MessageSquare, Activity } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export default function Dashboard() {
@@ -49,14 +48,14 @@ export default function Dashboard() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 mt-8">
           <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6">
-              <div className="flex space-x-2 mb-6">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4 md:p-6 h-full">
+              <div className="flex space-x-2 mb-6 overflow-x-auto pb-2 -mx-2 px-2">
                 <Button
                   variant={activeTab === 'chat' ? 'default' : 'ghost'}
                   onClick={() => setActiveTab('chat')}
-                  className="flex items-center space-x-2"
+                  className="flex items-center space-x-2 whitespace-nowrap"
                 >
                   <MessageSquare className="w-4 h-4" />
                   <span>Chat Assistant</span>
@@ -64,7 +63,7 @@ export default function Dashboard() {
                 <Button
                   variant={activeTab === 'activity' ? 'default' : 'ghost'}
                   onClick={() => setActiveTab('activity')}
-                  className="flex items-center space-x-2"
+                  className="flex items-center space-x-2 whitespace-nowrap"
                 >
                   <Activity className="w-4 h-4" />
                   <span>Activity</span>
@@ -72,11 +71,11 @@ export default function Dashboard() {
               </div>
 
               {activeTab === 'chat' ? (
-                <div className="h-[600px]">
+                <div className="h-[500px] md:h-[600px]">
                   <ChatInterface />
                 </div>
               ) : (
-                <div className="h-[600px] flex items-center justify-center">
+                <div className="h-[500px] md:h-[600px] flex items-center justify-center">
                   <div className="text-center">
                     <Activity className="w-12 h-12 text-slate-400 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">

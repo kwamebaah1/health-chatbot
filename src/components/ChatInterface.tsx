@@ -12,6 +12,7 @@ import { ConnectionStatus } from './ConnectionStatus'
 export function ChatInterface() {
   const [input, setInput] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
   const {
     messages,
     isLoading,
@@ -40,7 +41,7 @@ export function ChatInterface() {
   }
 
   return (
-    <div className="flex flex-col h-screen max-w-4xl mx-auto bg-white dark:bg-slate-900 shadow-xl rounded-lg overflow-hidden">
+    <div className="flex flex-col h-full bg-white dark:bg-slate-900 shadow-xl rounded-lg overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
         <div>
@@ -63,9 +64,12 @@ export function ChatInterface() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div 
+        ref={messagesContainerRef}
+        className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0" // Added min-h-0 for proper flexbox scrolling
+      >
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center text-slate-500 dark:text-slate-400">
+          <div className="flex flex-col items-center justify-center h-full text-center text-slate-500 dark:text-slate-400 p-4">
             <div className="w-16 h-16 mb-4 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
               <svg
                 className="w-8 h-8 text-blue-500"
@@ -105,7 +109,7 @@ export function ChatInterface() {
       </div>
 
       {/* Input */}
-      <form onSubmit={handleSubmit} className="p-4 border-t border-slate-200 dark:border-slate-700">
+      <form onSubmit={handleSubmit} className="p-4 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
         <div className="flex gap-2">
           <input
             type="text"
@@ -118,7 +122,7 @@ export function ChatInterface() {
           <Button
             type="submit"
             disabled={!input.trim() || isLoading}
-            className="rounded-full px-4"
+            className="rounded-full px-4 shrink-0"
           >
             <Send className="w-4 h-4" />
           </Button>
