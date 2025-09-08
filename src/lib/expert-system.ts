@@ -1,4 +1,3 @@
-// lib/expert-system.ts
 import { symptomDatabase } from "./symptomDatabase";
 
 export async function processWithExpertSystem(query: string) {

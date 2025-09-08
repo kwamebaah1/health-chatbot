@@ -22,6 +22,16 @@ export const symptomDatabase = {
       "follow up"
     ]
   },
+  "flu": {
+    "description": "Flu (influenza) is a viral infection that attacks your respiratory system.",
+    "symptoms": ["fever", "chills", "headache", "muscle_pain", "fatigue", "cough"],
+    "questions": [
+      "How long have you experienced these symptoms?",
+      "Do you also have sore throat or runny nose?",
+      "Is anyone else around you sick?"
+    ],
+    "precautions": ["rest", "stay hydrated", "consult doctor if severe"]
+  },
   "malaria": {
     "description": "An infectious disease caused by protozoan parasites from the Plasmodium family that can be transmitted by the bite of the Anopheles mosquito or by a contaminated needle or transfusion. Falciparum malaria is the most deadly type.",
     "symptoms": [
