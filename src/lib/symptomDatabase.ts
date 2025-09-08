@@ -1131,4 +1131,89 @@ export const symptomDatabase = {
       "consult_hepatologist"
     ]
   },
+  "leukemia": {
+    "description": "Leukemia is a type of cancer that affects the blood and bone marrow, leading to the uncontrolled production of abnormal white blood cells. It can occur in both children and adults.",
+    "symptoms": [
+      " frequent_infections",
+      " fatigue",
+      " unexplained_weight_loss",
+      " fever",
+      " easy_bruising",
+      " nosebleeds",
+      " night_sweats",
+      " bone_pain"
+    ],
+    "questions": [
+      "When did you first notice persistent fatigue or infections?",
+      "Have you experienced unusual bleeding or bruising?",
+      "Do you have a family history of blood cancers?",
+      "Have you noticed rapid weight loss or night sweats?",
+      "Have you undergone blood tests recently?"
+    ],
+    "precautions": [
+      "consult_oncologist",
+      "regular_blood_tests",
+      "avoid_infections",
+      "balanced_diet",
+      "follow_prescribed_treatment"
+    ]
+  },
+
+  "cerebrospinal_meningitis": {
+    "description": "Cerebrospinal Meningitis (CSM) is a serious bacterial infection that causes inflammation of the membranes covering the brain and spinal cord. It requires urgent medical attention.",
+    "symptoms": [
+      " severe_headache",
+      " stiff_neck",
+      " sensitivity_to_light",
+      " high_fever",
+      " nausea",
+      " vomiting",
+      " confusion",
+      " seizures"
+    ],
+    "questions": [
+      "When did the headache and fever start?",
+      "Have you experienced neck stiffness or sensitivity to light?",
+      "Have you been exposed to someone with meningitis?",
+      "Are you vaccinated against meningitis?",
+      "Do you feel confused or disoriented?"
+    ],
+    "precautions": [
+      "seek_emergency_care",
+      "isolation_to_prevent_spread",
+      "complete_antibiotic_treatment",
+      "hydration",
+      "vaccination_for_prevention"
+    ]
+  },
+
+  "ebola": {
+    "description": "Ebola Virus Disease is a severe and often fatal illness in humans caused by the Ebola virus. It spreads through direct contact with the blood, secretions, or organs of infected people or animals.",
+    "symptoms": [
+      " sudden_high_fever",
+      " severe_headache",
+      " muscle_pain",
+      " weakness",
+      " sore_throat",
+      " vomiting",
+      " diarrhea",
+      " rash",
+      " impaired_kidney_and_liver_function",
+      " internal_and_external_bleeding"
+    ],
+    "questions": [
+      "When did your fever and weakness begin?",
+      "Have you been in contact with anyone who was sick with Ebola?",
+      "Are you experiencing bleeding or bruising?",
+      "Do you have access to a healthcare facility?",
+      "Have you recently traveled to an affected region?"
+    ],
+    "precautions": [
+      "isolation_of_patient",
+      "seek_immediate_medical_attention",
+      "avoid_contact_with_infected",
+      "maintain_strict_hygiene",
+      "report_to_health_authorities"
+    ]
+  },
 }
