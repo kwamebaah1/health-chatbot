@@ -1046,5 +1046,89 @@ export const symptomDatabase = {
       "medication",
       "rest"
     ]
-  }
+  },
+  "menkes_disease": {
+    "description": "Menkes disease is a rare genetic disorder caused by mutations in the ATP7A gene, leading to problems with copper levels in the body. The condition primarily affects the development of the brain and connective tissues. Symptoms typically appear during infancy.",
+    "symptoms": [
+      " sparse_brittle_hair",
+      " developmental_delay",
+      " seizures",
+      " weak_muscle_tone",
+      " sagging_facial_features",
+      " failure_to_thrive",
+      " low_body_temperature",
+      " hypopigmentation_of_skin"
+    ],
+    "questions": [
+      "When did the symptoms first appear?",
+      "Has the child experienced seizures or developmental delays?",
+      "Is there a family history of genetic disorders?",
+      "Has genetic testing been done?",
+      "Are there feeding or growth difficulties?"
+    ],
+    "precautions": [
+      "early copper_histidine treatment",
+      "regular neurological evaluations",
+      "supportive therapy (physiotherapy, speech therapy)",
+      "genetic counseling for family"
+    ]
+  },
+
+  "heartburn": {
+    "description": "Heartburn is a burning discomfort in the chest or throat caused by stomach acid flowing back into the esophagus. It is often associated with gastroesophageal reflux disease (GERD) but can occur occasionally after eating spicy, fatty, or acidic foods.",
+    "symptoms": [
+      " burning_chest_pain",
+      " sour_taste_in_mouth",
+      " difficulty_swallowing",
+      " chest_discomfort_after_eating",
+      " regurgitation_of_food",
+      " chronic_cough",
+      " hoarseness"
+    ],
+    "questions": [
+      "How often do you experience the burning sensation?",
+      "Does the pain get worse after meals or when lying down?",
+      "What foods or drinks seem to trigger it?",
+      "Do you also experience chronic cough or throat irritation?",
+      "Has it interfered with your sleep?"
+    ],
+    "precautions": [
+      "avoid spicy_and_fatty_foods",
+      "eat_smaller_meals",
+      "avoid_lying_down_after_eating",
+      "raise_head_of_bed",
+      "consult_doctor_if_frequent"
+    ]
+  },
+
+  "liver_disease": {
+    "description": "Liver disease is a general term for conditions that affect the liver’s function, including hepatitis, cirrhosis, fatty liver disease, and liver cancer. The liver plays a vital role in digestion, detoxification, and metabolism.",
+    "symptoms": [
+      " jaundice",
+      " fatigue",
+      " abdominal_swelling",
+      " dark_urine",
+      " pale_stools",
+      " nausea",
+      " vomiting",
+      " loss_of_appetite",
+      " easy_bruising",
+      " confusion",
+      " itchy_skin"
+    ],
+    "questions": [
+      "When did you first notice these symptoms?",
+      "Do you consume alcohol regularly?",
+      "Have you been exposed to hepatitis viruses?",
+      "Are there any family members with liver disease?",
+      "Have you experienced sudden weight changes?"
+    ],
+    "precautions": [
+      "avoid_alcohol",
+      "maintain_healthy_diet",
+      "exercise_regularly",
+      "get_vaccinated_against_hepatitis",
+      "consult_hepatologist"
+    ]
+  },
 }
