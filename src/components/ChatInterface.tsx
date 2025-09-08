@@ -66,7 +66,7 @@ export function ChatInterface() {
       {/* Messages */}
       <div 
         ref={messagesContainerRef}
-        className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0" // Added min-h-0 for proper flexbox scrolling
+        className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0" 
       >
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center text-slate-500 dark:text-slate-400 p-4">
