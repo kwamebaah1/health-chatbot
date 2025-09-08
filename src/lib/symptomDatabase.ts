@@ -1216,4 +1216,137 @@ export const symptomDatabase = {
       "report_to_health_authorities"
     ]
   },
+  "measles": {
+    "description": "Measles is a highly contagious viral infection that primarily affects children. It spreads through coughing, sneezing, and close contact with infected individuals.",
+    "symptoms": [
+      " high_fever",
+      " cough",
+      " runny_nose",
+      " red_watery_eyes",
+      " skin_rash",
+      " sore_throat",
+      " fatigue"
+    ],
+    "questions": [
+      "When did the fever and rash first appear?",
+      "Has the child been vaccinated against measles?",
+      "Has the child been in contact with other sick children?",
+      "Are there signs of breathing difficulty?",
+      "Is the child eating and drinking well?"
+    ],
+    "precautions": [
+      "ensure_measles_vaccination",
+      "seek_medical_attention",
+      "hydration",
+      "isolation_to_prevent_spread",
+      "rest"
+    ]
+  },
+
+  "polio": {
+    "description": "Polio (poliomyelitis) is a viral disease that can cause paralysis and even death. It spreads through contaminated food and water.",
+    "symptoms": [
+      " fever",
+      " fatigue",
+      " headache",
+      " vomiting",
+      " stiff_neck",
+      " muscle_weakness",
+      " paralysis"
+    ],
+    "questions": [
+      "Has the child received polio vaccinations?",
+      "When did the fever and weakness begin?",
+      "Is the child experiencing muscle stiffness?",
+      "Any difficulty in walking or moving limbs?",
+      "Has the child had contact with polio cases?"
+    ],
+    "precautions": [
+      "polio_vaccination",
+      "immediate_medical_care",
+      "good_hygiene_practices",
+      "avoid_contaminated_water",
+      "supportive_care"
+    ]
+  },
+
+  "diphtheria": {
+    "description": "Diphtheria is a serious bacterial infection affecting the mucous membranes of the throat and nose. It spreads through respiratory droplets.",
+    "symptoms": [
+      " sore_throat",
+      " difficulty_breathing",
+      " fever",
+      " swollen_glands",
+      " thick_gray_coating_in_throat",
+      " weakness"
+    ],
+    "questions": [
+      "Has the child been vaccinated against diphtheria?",
+      "Is the child having difficulty breathing or swallowing?",
+      "When did the symptoms begin?",
+      "Any swelling in the neck area?",
+      "Has the child been exposed to someone with throat infections?"
+    ],
+    "precautions": [
+      "diphtheria_vaccination",
+      "seek_emergency_care",
+      "antitoxin_and_antibiotics",
+      "isolation_to_prevent_spread",
+      "monitor_breathing"
+    ]
+  },
+
+  "pertussis": {
+    "description": "Pertussis (whooping cough) is a contagious bacterial infection of the respiratory tract that can cause severe coughing fits, especially in children.",
+    "symptoms": [
+      " severe_coughing",
+      " whooping_sound_after_cough",
+      " runny_nose",
+      " sneezing",
+      " fatigue",
+      " vomiting_after_coughing",
+      " difficulty_breathing"
+    ],
+    "questions": [
+      "Has the child received the pertussis vaccine?",
+      "When did the coughing start?",
+      "Does the cough end with a whooping sound?",
+      "Is the child vomiting after coughing?",
+      "Is the child able to breathe properly?"
+    ],
+    "precautions": [
+      "pertussis_vaccination",
+      "consult_doctor",
+      "isolation_to_reduce_spread",
+      "hydration",
+      "antibiotic_treatment"
+    ]
+  },
+
+  "tetanus": {
+    "description": "Tetanus is a serious bacterial infection caused by *Clostridium tetani* spores, usually entering the body through wounds. It can cause muscle stiffness and spasms.",
+    "symptoms": [
+      " muscle_stiffness",
+      " jaw_lockjaw",
+      " difficulty_swallowing",
+      " muscle_spasms",
+      " fever",
+      " sweating",
+      " rapid_heartbeat"
+    ],
+    "questions": [
+      "Has the child been vaccinated against tetanus?",
+      "Did the child recently sustain a wound or injury?",
+      "When did muscle stiffness start?",
+      "Is the child having difficulty opening the mouth?",
+      "Are spasms frequent and severe?"
+    ],
+    "precautions": [
+      "tetanus_vaccination",
+      "wound_cleaning_and_care",
+      "seek_emergency_medical_attention",
+      "antitoxin_treatment",
+      "antibiotics"
+    ]
+  },
 }
