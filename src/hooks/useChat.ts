@@ -36,16 +36,16 @@ export function useChat() {
         response = await processWithAI(content, messages)
         
         // Store conversation in Supabase
-        const { error } = await supabase
-          .from('conversations')
-          .insert({
-            user_message: content,
-            ai_response: response,
-            mode: 'online',
-            created_at: new Date().toISOString()
-          })
+        //const { error } = await supabase
+          //.from('conversations')
+          //.insert({
+            //user_message: content,
+            //ai_response: response,
+            //mode: 'online',
+            //created_at: new Date().toISOString()
+          //})
           
-        if (error) console.error('Error saving conversation:', error)
+        //if (error) console.error('Error saving conversation:', error)
       }
 
       const assistantMessage: ChatMessage = {
