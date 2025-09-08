@@ -1349,4 +1349,30 @@ export const symptomDatabase = {
       "antibiotics"
     ]
   },
+  "ringworm": {
+    "description": "Ringworm is a common fungal infection of the skin, hair, or nails. Despite its name, it is not caused by a worm but by dermatophyte fungi. It spreads through direct contact with infected people, animals, or contaminated objects.",
+    "symptoms": [
+      " itchy_skin",
+      " red_circular_rash",
+      " scaly_patches",
+      " hair_loss_in_patches",
+      " cracked_skin",
+      " nail_discoloration",
+      " thickened_nails"
+    ],
+    "questions": [
+      "When did the rash first appear?",
+      "Is the rash spreading to other parts of the body?",
+      "Has the child or patient been in contact with pets or animals?",
+      "Does the itching worsen at night?",
+      "Has anyone else in the household developed similar symptoms?"
+    ],
+    "precautions": [
+      "avoid_sharing_towels_or_clothes",
+      "keep_skin_clean_and_dry",
+      "use_antifungal_medication",
+      "consult_doctor_if_severe",
+      "maintain_good_hygiene"
+    ]
+  }
 }
