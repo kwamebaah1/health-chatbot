@@ -12,25 +12,26 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog'
-import { Plus, Pill, Download, Info } from 'lucide-react'
-import { useChat } from '@/hooks/useChat'
+import { Plus, FileText, Download, Info, ChevronDown, ChevronUp, Calendar, User } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
-import DatePicker from 'react-datepicker'
-import "react-datepicker/dist/react-datepicker.css"
+import { ChatMessage } from '@/types/chat'
 
-export function QuickActions() {
-  const { messages, addMessage } = useChat()
+interface QuickActionsProps {
+  messages: ChatMessage[]
+  addMessage: (content: string) => Promise<void>
+}
 
+export function QuickActions({ messages, addMessage }: QuickActionsProps) {
   // Modals
   const [isLogModalOpen, setLogModalOpen] = useState(false)
-  const [isReminderModalOpen, setReminderModalOpen] = useState(false)
+  const [isSummaryModalOpen, setSummaryModalOpen] = useState(false)
   const [isInfoModalOpen, setInfoModalOpen] = useState(false)
+  const [isLogOpen, setIsLogOpen] = useState(false)
 
   // Inputs
   const [symptomInput, setSymptomInput] = useState('')
-  const [reminderDate, setReminderDate] = useState<Date | null>(null)
-  const [reminderNote, setReminderNote] = useState('')
+  const [patientId, setPatientId] = useState('')
   const [userEmail, setUserEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
@@ -67,48 +68,45 @@ export function QuickActions() {
     }
   }
 
-  const handleReminderSubmit = async () => {
-    if (!reminderDate || !reminderNote.trim() || !userEmail.trim()) {
-      toast.error("Please enter email, date/time, and reminder details")
+  const handleGenerateSummary = async () => {
+    if (messages.length === 0) {
+      toast.error("No conversation history to generate a summary from")
       return
     }
-    
+
     setIsLoading(true)
     try {
-      // Save to Supabase
-      const { error } = await supabase
-        .from('reminders')
-        .insert({
-          user_email: userEmail,
-          note: reminderNote,
-          reminder_time: reminderDate.toISOString()
-        })
-
-      if (error) throw error
-
-      // Add to chat
-      addMessage(`Medication reminder set for ${reminderDate.toLocaleString()}: ${reminderNote}`)
+      // Generate a summary from the conversation
+      const conversationText = messages.map(m => 
+        `${m.role === 'user' ? 'Patient' : 'Assistant'}: ${m.content}`
+      ).join('\n')
       
-      toast.success(`Reminder Set Reminder scheduled for ${reminderDate.toLocaleString()}`)
-      
-      setReminderDate(null)
-      setReminderNote('')
-      setReminderModalOpen(false)
+      const summary = `Patient Conversation Summary (Generated ${new Date().toLocaleString()}):\n\n${conversationText}\n\n---\nSummary: This conversation covers patient-reported symptoms and medical advice provided.`
 
-      // Setup real-time reminder (client-side)
-      const timeUntilReminder = reminderDate.getTime() - Date.now()
-      if (timeUntilReminder > 0) {
-        setTimeout(() => {
-          toast.success(`💊 Medication Reminder, ${reminderNote}`)
-          
-          // Also add a chat message when reminder triggers
-          addMessage(`🔔 REMINDER: ${reminderNote}`)
-        }, timeUntilReminder)
+      // ✅ Save summary to localStorage
+      const savedSummaries = JSON.parse(localStorage.getItem("patient_summaries") || "[]")
+      const newSummary = {
+        user_email: userEmail,
+        patient_id: patientId || 'unknown',
+        summary,
+        created_at: new Date().toISOString(),
       }
 
+      savedSummaries.push(newSummary)
+      sessionStorage.setItem("patient_summaries", JSON.stringify(savedSummaries))
+
+      // Add to chat
+      addMessage(`Generated patient summary for ${patientId || 'current session'}`)
+
+      toast.success("Patient summary saved locally")
+
+      setPatientId('')
+      setSummaryModalOpen(false)
+      setLogModalOpen(true)
+
     } catch (error) {
-      console.error('Error setting reminder:', error)
-      toast.error("Error, Failed to set reminder. Please try again.")
+      console.error('Error generating summary:', error)
+      toast.error("Error, Failed to generate summary. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -141,10 +139,16 @@ export function QuickActions() {
       action: () => setLogModalOpen(true),
     },
     {
-      label: 'Set Medication Reminder',
-      icon: Pill,
+      label: 'Generate Summary',
+      icon: FileText,
       color: 'bg-green-500',
-      action: () => setReminderModalOpen(true),
+      action: () => {
+        if (messages.length === 0) {
+          toast.error("Please start a conversation first to generate a summary")
+        } else {
+          setSummaryModalOpen(true)
+        }
+      },
     },
     {
       label: 'Export Records',
@@ -204,27 +208,81 @@ export function QuickActions() {
             className="w-full"
           />
           <p className="text-sm text-muted-foreground mt-2">
-            This will be used to save your health data and reminders.
+            This will be used to save your health data and summaries.
           </p>
         </CardContent>
       </Card>
 
       {/* Activity Log */}
-      {messages.length > 0 && (
-        <Card className="mt-4 bg-white dark:bg-slate-800 border-0 shadow-sm">
-          <CardHeader>
-            <CardTitle>Activity Log</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {messages.map((msg, idx) => (
-              <div
-                key={idx}
-                className="p-2 rounded-md bg-slate-100 dark:bg-slate-700 text-sm"
-              >
-                {msg.content}
+      {JSON.parse(sessionStorage.getItem("patient_summaries") || "[]").length > 0 && (
+        <Card className="mt-4 bg-white dark:bg-slate-800 border-0 shadow-sm overflow-hidden transition-all duration-300 ease-in-out">
+          <CardHeader 
+            className="flex flex-row justify-between items-center p-4 cursor-pointer hover:bg-grey-50 dark:hover:bg-slate-750 transition-colors duration-200"
+            onClick={() => setIsLogOpen(!isLogOpen)}
+          >
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               </div>
-            ))}
-          </CardContent>
+              <div>
+                <CardTitle className="text-lg font-semibold">Activity Log</CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  View your generated health summaries
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 rounded-full"
+            >
+              {isLogOpen ? (
+                <ChevronUp className="h-4 w-4" />
+              ) : (
+                <ChevronDown className="h-4 w-4" />
+              )}
+            </Button>
+          </CardHeader>
+
+          {/* Animated Content Area */}
+          <div className={`
+            overflow-hidden transition-all duration-300 ease-in-out
+            ${isLogOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}
+          `}>
+            <CardContent className="p-4 space-y-4">
+              {JSON.parse(sessionStorage.getItem("patient_summaries") || "[]")
+                .map((summary: any, idx: number) => (
+                  <div
+                    key={idx}
+                    className="p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 backdrop-blur-sm transition-all hover:shadow-sm"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center space-x-2">
+                        <Calendar className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm font-medium text-muted-foreground">
+                          {new Date(summary.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <User className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">
+                          {summary.patient_id || 'Unknown ID'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-3 rounded-md bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-sm whitespace-pre-wrap font-mono">
+                      {summary.summary}
+                    </div>
+                  </div>
+                ))}
+              
+              {JSON.parse(sessionStorage.getItem("patient_summaries") || "[]").length === 0 && (
+                <div className="text-center py-6 text-muted-foreground">
+                  No activity records yet. Generate a summary to see it here.
+                </div>
+              )}
+            </CardContent>
+          </div>
         </Card>
       )}
 
@@ -270,13 +328,13 @@ export function QuickActions() {
         </DialogContent>
       </Dialog>
 
-      {/* Medication Reminder Modal */}
-      <Dialog open={isReminderModalOpen} onOpenChange={setReminderModalOpen}>
+      {/* Patient Summary Modal */}
+      <Dialog open={isSummaryModalOpen} onOpenChange={setSummaryModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Set Medication Reminder</DialogTitle>
+            <DialogTitle>Generate Patient Summary</DialogTitle>
             <DialogDescription>
-              Choose a date, time, and note for your medication reminder.
+              Create a summary of the current conversation for patient records.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -287,40 +345,33 @@ export function QuickActions() {
               onChange={(e) => setUserEmail(e.target.value)}
               required
             />
-            <div className="relative">
-              <DatePicker
-                selected={reminderDate}
-                onChange={(date: Date) => setReminderDate(date)}
-                showTimeSelect
-                timeFormat="HH:mm"
-                timeIntervals={15}
-                timeCaption="Time"
-                dateFormat="MMMM d, yyyy h:mm aa"
-                placeholderText="Select date and time"
-                minDate={new Date()}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              />
-            </div>
             <Input
-              placeholder="Medication details (e.g. Take 1 tablet of Paracetamol)"
-              value={reminderNote}
-              onChange={(e) => setReminderNote(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleReminderSubmit()}
+              placeholder="Patient ID (optional)"
+              value={patientId}
+              onChange={(e) => setPatientId(e.target.value)}
             />
+            <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-md">
+              <p className="text-sm text-muted-foreground">
+                {messages.length === 0 
+                  ? "No conversation history available. Please chat with the assistant first."
+                  : `This will generate a summary based on the current conversation history (${messages.length} messages) and save it to the database.`
+                }
+              </p>
+            </div>
           </div>
           <DialogFooter>
             <Button 
               variant="outline" 
-              onClick={() => setReminderModalOpen(false)}
+              onClick={() => setSummaryModalOpen(false)}
               disabled={isLoading}
             >
               Cancel
             </Button>
             <Button 
-              onClick={handleReminderSubmit} 
-              disabled={!userEmail.trim() || !reminderDate || !reminderNote.trim() || isLoading}
+              onClick={handleGenerateSummary} 
+              disabled={!userEmail.trim() || isLoading || messages.length === 0}
             >
-              {isLoading ? 'Setting...' : 'Set Reminder'}
+              {isLoading ? 'Generating...' : 'Generate Summary'}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -332,10 +383,10 @@ export function QuickActions() {
           <DialogHeader>
             <DialogTitle>About Our System</DialogTitle>
             <DialogDescription>
-              Our health management system helps you track symptoms, set
-              medication reminders, export your health records, and manage your
-              overall wellbeing. Designed with simplicity and security in mind,
-              it empowers you to take control of your healthcare journey.
+              Our medical assistant system helps healthcare professionals track patient symptoms, 
+              generate consultation summaries, export medical records, and manage patient interactions. 
+              Designed with medical expertise in mind, it streamlines clinical documentation and 
+              enhances patient care.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

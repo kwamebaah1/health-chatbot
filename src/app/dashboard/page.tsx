@@ -7,6 +7,11 @@ import { ChatInterface } from '@/components/ChatInterface'
 import { Button } from '@/components/ui/button'
 import { MessageSquare, Activity } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { ChatMessage, ChatMode } from '@/types/chat'
+import { processWithExpertSystem } from '@/lib/expert-system'
+import { processWithAI } from '@/lib/together-ai'
+import { supabase } from '@/lib/supabase'
+import { useConnectionStatus } from '@/hooks/useConnectionStatus'
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('chat')
@@ -16,6 +21,65 @@ export default function Dashboard() {
     sleep: 7.2,
     calories: 2100
   })
+
+  // Chat state moved to Dashboard
+  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [mode, setMode] = useState<ChatMode>('auto')
+  const isOnline = useConnectionStatus()
+
+  const currentMode = mode === 'auto' ? (isOnline ? 'online' : 'offline') : mode
+
+  const addMessage = async (content: string) => {
+    const userMessage: ChatMessage = {
+      id: Date.now().toString(),
+      content,
+      role: 'user',
+      timestamp: new Date(),
+      isOffline: currentMode === 'offline'
+    }
+
+    setMessages(prev => [...prev, userMessage])
+    setIsLoading(true)
+
+    try {
+      let response: string
+      
+      if (currentMode === 'offline') {
+        response = await processWithExpertSystem(content)
+      } else {
+        response = await processWithAI(content, messages)
+      }
+
+      const assistantMessage: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        content: response,
+        role: 'assistant',
+        timestamp: new Date(),
+        isOffline: currentMode === 'offline'
+      }
+
+      setMessages(prev => [...prev, assistantMessage])
+    } catch (error) {
+      console.error('Error processing message:', error)
+      
+      const errorMessage: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        content: 'Sorry, I encountered an error. Please try again.',
+        role: 'assistant',
+        timestamp: new Date(),
+        isOffline: currentMode === 'offline'
+      }
+      
+      setMessages(prev => [...prev, errorMessage])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const clearMessages = () => {
+    setMessages([])
+  }
 
   useEffect(() => {
     // Simulate live data updates
@@ -72,7 +136,16 @@ export default function Dashboard() {
 
               {activeTab === 'chat' ? (
                 <div className="h-[500px] md:h-[600px]">
-                  <ChatInterface />
+                  <ChatInterface 
+                    messages={messages}
+                    isLoading={isLoading}
+                    mode={mode}
+                    setMode={setMode}
+                    currentMode={currentMode}
+                    addMessage={addMessage}
+                    clearMessages={clearMessages}
+                    isOnline={isOnline}
+                  />
                 </div>
               ) : (
                 <div className="h-[500px] md:h-[600px] flex items-center justify-center">
@@ -92,7 +165,10 @@ export default function Dashboard() {
 
           <div className="space-y-6">
             <HealthTips />
-            <QuickActions />
+            <QuickActions 
+              messages={messages}
+              addMessage={addMessage}
+            />
           </div>
         </div>
       </div>

@@ -1,28 +1,38 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { useChat } from '@/hooks/useChat'
 import { ModeToggle } from './ModeToggle'
 import { MessageBubble } from './MessageBubble'
 import { Button } from './ui/button'
 import { Send, Trash2 } from 'lucide-react'
 import { LoadingAnimation } from './LoadingAnimation'
 import { ConnectionStatus } from './ConnectionStatus'
+import { ChatMessage, ChatMode } from '@/types/chat'
 
-export function ChatInterface() {
+interface ChatInterfaceProps {
+  messages: ChatMessage[]
+  isLoading: boolean
+  mode: ChatMode
+  setMode: (mode: ChatMode) => void
+  currentMode: 'online' | 'offline'
+  addMessage: (content: string) => Promise<void>
+  clearMessages: () => void
+  isOnline: boolean
+}
+
+export function ChatInterface({
+  messages,
+  isLoading,
+  mode,
+  setMode,
+  currentMode,
+  addMessage,
+  clearMessages,
+  isOnline
+}: ChatInterfaceProps) {
   const [input, setInput] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
-  const {
-    messages,
-    isLoading,
-    mode,
-    setMode,
-    currentMode,
-    addMessage,
-    clearMessages,
-    isOnline
-  } = useChat()
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
